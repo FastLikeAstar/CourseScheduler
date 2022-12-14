@@ -21,5 +21,5 @@ public interface AssignmentDao {
     @Delete
     void delete(Assignment assignment);
     @Query("SELECT * FROM assignments WHERE courseId= :courseId ORDER BY courseId ASC")
-    List<Course> getAllAssociatedAssignments(int courseId);
+    List<Assignment> getAllAssociatedAssignments(int courseId);
 }

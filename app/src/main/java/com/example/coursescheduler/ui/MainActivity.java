@@ -8,12 +8,15 @@ import android.view.View;
 
 import com.example.coursescheduler.R;
 
+import database.Repository;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Repository repository = new Repository(getApplication());
     }
 
     public void BeginClicked(View view){

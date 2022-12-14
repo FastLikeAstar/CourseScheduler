@@ -11,9 +11,9 @@ public class Assignment {
     private int assignmentId;
     private int courseId;
     private String assignmentName;
-    private Date dueDate;
+    private String dueDate;
 
-    public Assignment(int assignmentId, int courseId, String assignmentName, Date dueDate) {
+    public Assignment(int assignmentId, int courseId, String assignmentName, String dueDate) {
         this.assignmentId = assignmentId;
         this.courseId = courseId;
         this.assignmentName = assignmentName;
@@ -48,11 +48,11 @@ public class Assignment {
         this.assignmentName = assignmentName;
     }
 
-    public Date getDueDate() {
+    public String getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
 }
