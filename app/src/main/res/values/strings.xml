@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CourseScheduler</string>
     <string name="button_begin">Begin</string>
+    <string name="saveButtonText">Save</string>
 </resources>
