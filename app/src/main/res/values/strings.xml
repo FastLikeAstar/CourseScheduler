@@ -2,4 +2,8 @@
     <string name="app_name">CourseScheduler</string>
     <string name="button_begin">Begin</string>
     <string name="saveButtonText">Save</string>
+    <string name="newCourseButton">Add New Course</string>
+    <string name="newAssessmentButton">Add New Assessment</string>
+    <string name="channel_name">my_channel</string>
+    <string name="channel_description">NotificationsForReminders</string>
 </resources>

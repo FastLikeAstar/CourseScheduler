@@ -12,14 +12,12 @@ public class Term {
     private String termName;
     private String startDate;
     private String endDate;
-    private String status;
 
-    public Term(int termId, String termName, String startDate, String endDate, String status) {
+    public Term(int termId, String termName, String startDate, String endDate) {
         this.termId = termId;
         this.termName = termName;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.status = status;
     }
 
     public Term() {
@@ -58,11 +56,4 @@ public class Term {
         this.endDate = endDate;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

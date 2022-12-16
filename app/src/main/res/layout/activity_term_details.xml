@@ -8,81 +8,115 @@
 
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#DAF8CE"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/TermName"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Term Name" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/TermNamePrompt"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter Term Name Here..." />
+            <TextView
+                android:id="@+id/TermName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="Term Name"
+                android:textAlignment="center" />
 
-        <TextView
-            android:id="@+id/TermStart"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Term Start Date" />
+            <EditText
+                android:id="@+id/TermNamePrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Enter Term Name Here..."
+                android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/TermStartPrompt"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter Term Start Date Here..." />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/TermEnd"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Term End Date" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/TermEndPrompt"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter Term End Date Here..." />
+            <TextView
+                android:id="@+id/TermStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="Term Start Date"
+                android:textAlignment="center" />
 
-        <TextView
-            android:id="@+id/TermStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_marginTop="4dp"
-            android:minHeight="48dp"
-            android:text="Term Start Date" />
+            <EditText
+                android:id="@+id/TermStartPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Enter Term Start Date Here..."
+                android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/TermStatusPrompt"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter Term Status Here..." />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/TermEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="Term End Date"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/TermEndPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Enter Term End Date Here..."
+                android:minHeight="48dp" />
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/saveTermButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:backgroundTint="#CCC5C5"
             android:contentDescription="@string/saveButtonText"
             android:minWidth="48dp"
             android:minHeight="48dp"
             app:srcCompat="@drawable/ic_baseline_save_24" />
+
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:layout_editor_absoluteX="16dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/course_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addCourseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:clickable="true"
+        android:contentDescription="@string/newCourseButton"
+        android:onClick="addNewCourse"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_playlist_add_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>
