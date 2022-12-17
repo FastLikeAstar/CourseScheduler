@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +19,12 @@ import android.widget.ImageButton;
 import com.example.coursescheduler.R;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import database.Repository;
 import entities.Course;
@@ -35,6 +40,7 @@ public class TermDetails extends AppCompatActivity {
     String name;
     String startDate;
     String endDate;
+
 
     Term term;
     Repository repository;
@@ -80,11 +86,6 @@ public class TermDetails extends AppCompatActivity {
                     Snackbar.make(view, "Term is Updated", Snackbar.LENGTH_LONG).show();
                 }
 
-                Long trigger = startDate.getTime();
-                Intent notification = new Intent(TermDetails.this, MyReceiver.class);
-                notification.putExtra("key", "Your term, "+ name + ", starts today!");
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                // Time Stamp 22:38 left - 1:03:00
             }
         });
 
@@ -150,5 +151,48 @@ public class TermDetails extends AppCompatActivity {
     public void addNewCourse(View view){
         Intent navToNewActivity = new Intent(TermDetails.this, CourseDetails.class );
         startActivity(navToNewActivity);
+    }
+
+    public void createAlarm(View view){
+        try {
+            Date dateAsDate = MainActivity.stringToDate(startDate);
+            Long trigger = dateAsDate.getTime();
+
+            Intent notification = new Intent(TermDetails.this, MyReceiver.class);
+            notification.putExtra("key", "Your term, "+ name + ", starts today!");
+            PendingIntent sender = PendingIntent.getBroadcast(TermDetails.this, MainActivity.alertNumber++,notification, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+            dateAsDate = MainActivity.stringToDate(endDate);
+            trigger = dateAsDate.getTime();
+
+            Intent notification2 = new Intent(TermDetails.this, MyReceiver.class);
+            notification2.putExtra("key", "Your term, "+ name + ", ends today!");
+            sender = PendingIntent.getBroadcast(TermDetails.this, MainActivity.alertNumber++,notification2, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+            Snackbar.make(view, "Reminder set for " + term.getTermName() +".", Snackbar.LENGTH_LONG).show();
+
+        } catch (ParseException e) {
+            Snackbar.make(view, "Reminder failed to create", Snackbar.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteTerm(View view){
+        int numberOfCourses = 0;
+
+        for (Course course: repository.getAllCourse(this.id)){
+            numberOfCourses++;
+        }
+
+        if (numberOfCourses == 0){
+            Snackbar.make(view, term.getTermName()+ " was deleted.", Snackbar.LENGTH_LONG).show();
+            repository.delete(term);
+        } else{
+            Snackbar.make(view, "Unable to delete this term. Delete the courses first.", Snackbar.LENGTH_LONG).show();
+
+        }
     }
 }
