@@ -219,7 +219,9 @@ public class TermDetails extends AppCompatActivity {
         }
 
         if (numberOfCourses == 0){
-            repository.delete(term);
+            repository.delete(term, id);
+            Snackbar.make(view, "Term deleted. Re-save if this was a mistake.", Snackbar.LENGTH_LONG).show();
+
         } else{
             Snackbar.make(view, "Unable to delete this term. Delete the courses first.", Snackbar.LENGTH_LONG).show();
         }

@@ -66,9 +66,9 @@ public class Repository {
             e.printStackTrace();
         }
     }
-    public void delete(Term term){
+    public void delete(Term term, int id){
         databaseExecutor.execute(()->{
-            mTermDao.deleteTerm(term.getTermId());
+            mTermDao.deleteTerm(id);
         });
         try{
             Thread.sleep(800);
@@ -110,9 +110,9 @@ public class Repository {
             e.printStackTrace();
         }
     }
-    public void delete(Course course){
+    public void delete(Course course, int id){
         databaseExecutor.execute(()->{
-            mCourseDao.deleteCourse(course.getCourseId());
+            mCourseDao.deleteCourse(id);
         });
         try{
             Thread.sleep(800);
@@ -154,12 +154,13 @@ public class Repository {
             e.printStackTrace();
         }
     }
-    public void delete(Assignment assignment){
+    public void delete(Assignment assignment, int id){
+
         databaseExecutor.execute(()->{
-            mAssignmentDao.deleteAssignment(assignment.getAssignmentId());
+            mAssignmentDao.deleteAssignment(id);
         });
         try{
-            Thread.sleep(800);
+            Thread.sleep(400);
         } catch (InterruptedException e){
             e.printStackTrace();
         }

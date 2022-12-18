@@ -4,12 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -18,6 +21,7 @@ import com.example.coursescheduler.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import database.Repository;
@@ -60,6 +64,9 @@ public class AssignmentDetails extends AppCompatActivity implements AdapterView.
     Assignment assignment;
     Repository repository;
 
+    DatePickerDialog startDatePicker;
+    DatePickerDialog endDatePicker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +81,9 @@ public class AssignmentDetails extends AppCompatActivity implements AdapterView.
         typePrompt = findViewById(R.id.AssignmentTypePrompt);
 
 
-        id = getIntent().getIntExtra("assignment id", -1);
+        id = getIntent().getIntExtra("id", -1);
 //        termId = getIntent().getIntExtra("term id", -1);
+        courseId = getIntent().getIntExtra("course id", -1);
 //        termName = getIntent().getStringExtra("term name");
 //        termStart = getIntent().getStringExtra("term start");
 //        termEnd = getIntent().getStringExtra("term end");
@@ -112,8 +120,49 @@ public class AssignmentDetails extends AppCompatActivity implements AdapterView.
                     assignment = new Assignment(id, courseId, type,editNamePrompt.getText().toString(), startDatePrompt.getText().toString(),
                             endDatePrompt.getText().toString());
                     repository.update(assignment);
-                    Snackbar.make(view, "Assignment is Updated", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, "Assessment is Updated", Snackbar.LENGTH_LONG).show();
                 }
+            }
+        });
+
+
+        startDatePrompt.setInputType(InputType.TYPE_NULL);
+        startDatePrompt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+                // date picker dialog
+                startDatePicker = new DatePickerDialog(AssignmentDetails.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker dp, int year, int monthOfYear, int dayOfMonth) {
+                                startDatePrompt.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                            }
+                        }, year, month, day);
+                startDatePicker.show();
+            }
+        });
+
+        endDatePrompt.setInputType(InputType.TYPE_NULL);
+        endDatePrompt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+                // date picker dialog
+                endDatePicker = new DatePickerDialog(AssignmentDetails.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker dp, int year, int monthOfYear, int dayOfMonth) {
+                                endDatePrompt.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                            }
+                        }, year, month, day);
+                endDatePicker.show();
             }
         });
 
@@ -128,7 +177,7 @@ public class AssignmentDetails extends AppCompatActivity implements AdapterView.
 
 
     public void deleteAssignment(View view){
-        repository.delete(assignment);
+        repository.delete(assignment, id);
         Snackbar.make(view, "Assessment deleted. Re-save if this was a mistake.", Snackbar.LENGTH_LONG).show();
     }
 

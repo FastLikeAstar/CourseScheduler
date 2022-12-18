@@ -46,7 +46,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             holder.assignmentItemView.setText(name);
         }
         else {
-            holder.assignmentItemView.setText("No Assignment name.");
+            holder.assignmentItemView.setText("No Assessment Name.");
         }
     }
 
