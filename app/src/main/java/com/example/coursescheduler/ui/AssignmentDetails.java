@@ -97,6 +97,7 @@ public class AssignmentDetails extends AppCompatActivity implements AdapterView.
         name = getIntent().getStringExtra("name");
         startDate = getIntent().getStringExtra("start date");
         endDate = getIntent().getStringExtra("end date");
+        type = getIntent().getStringExtra("type");
 //        instructorName = getIntent().getStringExtra("instructor");
 //        instructorNumber = getIntent().getStringExtra("phone number");
 //        instructorEmail = getIntent().getStringExtra("email");
@@ -176,6 +177,15 @@ public class AssignmentDetails extends AppCompatActivity implements AdapterView.
         typePrompt.setOnItemSelectedListener(this);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typePrompt.setAdapter(spinnerAdapter);
+
+        if (type != null && (!type.isEmpty())){
+            if (type.equalsIgnoreCase("Performance")){
+                typePrompt.setSelection(0);
+            }
+            if (type.equalsIgnoreCase("Objective")){
+                typePrompt.setSelection(1);
+            }
+        }
 
         editNamePrompt.setText(name);
         startDatePrompt.setText(startDate);

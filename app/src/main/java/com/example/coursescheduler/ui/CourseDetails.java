@@ -114,6 +114,7 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         instructorNumber = getIntent().getStringExtra("number");
         instructorEmail = getIntent().getStringExtra("email");
         courseNotes = getIntent().getStringExtra("notes");
+        status = getIntent().getStringExtra("status");
 
         // Status options (in progress, completed, dropped, plan to take)
         List<String> statusOptions = new ArrayList<String>();
@@ -121,6 +122,8 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         statusOptions.add("Completed");
         statusOptions.add("Dropped");
         statusOptions.add("Plan to Take");
+
+
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, statusOptions);
 
@@ -192,6 +195,21 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusPrompt.setAdapter(spinnerAdapter);
 
+        if (status != null && (!status.isEmpty())){
+            if (status.equalsIgnoreCase("In Progress")){
+                statusPrompt.setSelection(0);
+            }
+            if (status.equalsIgnoreCase("Completed")){
+                statusPrompt.setSelection(1);
+            }
+            if (status.equalsIgnoreCase("Dropped")){
+                statusPrompt.setSelection(2);
+            }
+            if (status.equalsIgnoreCase("Plan to Take")){
+                statusPrompt.setSelection(3);
+            }
+        }
+
         editNamePrompt.setText(name);
         startDatePrompt.setText(startDate);
         endDatePrompt.setText(endDate);
@@ -237,12 +255,12 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
 
         for (Assignment assignment: repository.getAllAssignments(this.id)){
             numberOfAssignments++;
-            Snackbar.make(view, "Course deleted. Re-save if this was a mistake.", Snackbar.LENGTH_LONG).show();
-
         }
 
         if (numberOfAssignments == 0){
             repository.delete(course, id);
+            Snackbar.make(view, "Term deleted. Re-save if this was a mistake.", Snackbar.LENGTH_LONG).show();
+
         } else{
             Snackbar.make(view, "Unable to delete this course. Delete the assessments first.", Snackbar.LENGTH_LONG).show();
 
@@ -255,31 +273,7 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
     }
 
 
-//    public boolean opOptionsItemSelected(MenuItem item){
-//        switch (item.getItemId()){
-//            case android.R.id.home:
-//                Intent changeActivity = new Intent(this, TermDetails.class);
-//                changeActivity.putExtra("id",termId);
-//                changeActivity.putExtra("name", termName);
-//                changeActivity.putExtra("start date", termStart);
-//                changeActivity.putExtra("end date", termEnd);
-//                startActivity(changeActivity);
-//                this.finish();
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
-//    @Override
-//    public void onBackPressed()
-//    {
-//        Intent changeActivity = new Intent(this, TermDetails.class);
-//        changeActivity.putExtra("id",termId);
-//        changeActivity.putExtra("name", termName);
-//        changeActivity.putExtra("start date", termStart);
-//        changeActivity.putExtra("end date", termEnd);
-//        startActivity(changeActivity);
-//    }
 
     public void createCourseAlarm(View view){
         try {

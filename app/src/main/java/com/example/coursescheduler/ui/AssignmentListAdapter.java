@@ -79,6 +79,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
                     Intent changeActivity = new Intent(context, AssignmentDetails.class);
                     changeActivity.putExtra("id",current.getAssignmentId());
                     changeActivity.putExtra("course id",current.getCourseId());
+                    changeActivity.putExtra("type", current.getType());
                     changeActivity.putExtra("name", current.getAssignmentName());
                     changeActivity.putExtra("start date", current.getStartDate());
                     changeActivity.putExtra("end date", current.getEndDate());
