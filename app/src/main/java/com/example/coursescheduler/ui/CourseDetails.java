@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -39,6 +41,11 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
     String name;
     String startDate;
     String endDate;
+    String status;
+
+    String termName;
+    String termStart;
+    String termEnd;
 
     String instructorName;
     String instructorNumber;
@@ -58,6 +65,8 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
+
         editNamePrompt = findViewById(R.id.CourseNamePrompt);
         startDatePrompt = findViewById(R.id.CourseStartPrompt);
         endDatePrompt = findViewById(R.id.CourseEndPrompt);
@@ -67,8 +76,11 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         instructorEmailPrompt = findViewById(R.id.EmailPrompt);
         courseNotesPrompt = findViewById(R.id.CourseNotesField);
 
-        id = getIntent().getIntExtra("id", -1);
-        termId = getIntent().getIntExtra("termId", -1);
+        id = getIntent().getIntExtra("course id", -1);
+        termId = getIntent().getIntExtra("term id", -1);
+        termName = getIntent().getStringExtra("term name");
+        termStart = getIntent().getStringExtra("term start");
+        termEnd = getIntent().getStringExtra("term end");
         name = getIntent().getStringExtra("name");
         startDate = getIntent().getStringExtra("start date");
         endDate = getIntent().getStringExtra("end date");
@@ -77,12 +89,15 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         instructorEmail = getIntent().getStringExtra("email");
         courseNotes = getIntent().getStringExtra("notes");
 
-        // (in progress, completed, dropped, plan to take)
+        // Status options (in progress, completed, dropped, plan to take)
         List<String> statusOptions = new ArrayList<String>();
         statusOptions.add("In Progress");
         statusOptions.add("Completed");
         statusOptions.add("Dropped");
         statusOptions.add("Plan to Take");
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, statusOptions);
+
 
         repository = new Repository(getApplication());
 
@@ -91,14 +106,14 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onClick(View view){
                 if (id == -1){
-                    course = new Course(0,termId, editNamePrompt.getText().toString(), statusPrompt.getText().toString(), startDatePrompt.getText().toString(),
+                    course = new Course(0,termId, editNamePrompt.getText().toString(), status, startDatePrompt.getText().toString(),
                             endDatePrompt.getText().toString(),instructorNamePrompt.getText().toString(), instructorNumberPrompt.getText().toString(), instructorEmailPrompt.getText().toString(),
                             courseNotesPrompt.getText().toString());
                     repository.insert(course);
                     Snackbar.make(view, "Course is Saved", Snackbar.LENGTH_LONG).show();
                 }
                 else{
-                    course = new Course(id,termId, editNamePrompt.getText().toString(), statusPrompt.getText().toString(), startDatePrompt.getText().toString(),
+                    course = new Course(id,termId, editNamePrompt.getText().toString(), status, startDatePrompt.getText().toString(),
                             endDatePrompt.getText().toString(),instructorNamePrompt.getText().toString(), instructorNumberPrompt.getText().toString(), instructorEmailPrompt.getText().toString(),
                             courseNotesPrompt.getText().toString());
                     repository.update(course);
@@ -108,19 +123,33 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         });
 
         statusPrompt.setOnItemSelectedListener(this);
-        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusPrompt.setAdapter(spinnerAdapter);
 
         editNamePrompt.setText(name);
         startDatePrompt.setText(startDate);
         endDatePrompt.setText(endDate);
+        instructorNamePrompt.setText(instructorName);
+        instructorNumberPrompt.setText(instructorNumber);
+        instructorEmailPrompt.setText(instructorEmail);
+        courseNotesPrompt.setText(courseNotes);
+
+
     }
 
 
     @Override
     protected void onResume(){
+//        super.onResume();
+//        List<Course> allCourse = repository.getAllCourse(this.id);
+//        RecyclerView recyclerView = findViewById(R.id.course_recyclerview);
+//        final CourseListAdapter listAdapter = new CourseListAdapter(this);
+//        recyclerView.setAdapter(listAdapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        listAdapter.setCourses(allCourse);
         super.onResume();
         List<Course> allCourse = repository.getAllCourse(this.id);
-        RecyclerView recyclerView = findViewById(R.id.course_recyclerview);
+        RecyclerView recyclerView = findViewById(R.id.assessment_recyclerview);
         final CourseListAdapter listAdapter = new CourseListAdapter(this);
         recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -135,7 +164,7 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
     public void shareNotes(View view){
         Intent sendNotes = new Intent();
         sendNotes.setAction(Intent.ACTION_SEND);
-        sendNotes.putExtra(Intent.EXTRA_TEXT, "Text from notes" );
+        sendNotes.putExtra(Intent.EXTRA_TEXT, courseNotesPrompt.getText() );
         sendNotes.putExtra(Intent.EXTRA_TITLE, "Message title");
         sendNotes.setType("text/plain");
 
@@ -151,7 +180,6 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         }
 
         if (numberOfAssignments == 0){
-            Snackbar.make(view, course.getCourseName()+ " was deleted.", Snackbar.LENGTH_LONG).show();
             repository.delete(course);
         } else{
             Snackbar.make(view, "Unable to delete this course. Delete the assessments first.", Snackbar.LENGTH_LONG).show();
@@ -159,14 +187,42 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
         }
     }
 
+    public boolean opOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case android.R.id.home:
+                Intent changeActivity = new Intent(this, TermDetails.class);
+                changeActivity.putExtra("id",termId);
+                changeActivity.putExtra("name", termName);
+                changeActivity.putExtra("start date", termStart);
+                changeActivity.putExtra("end date", termEnd);
+                startActivity(changeActivity);
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent changeActivity = new Intent(this, TermDetails.class);
+        changeActivity.putExtra("id",termId);
+        changeActivity.putExtra("name", termName);
+        changeActivity.putExtra("start date", termStart);
+        changeActivity.putExtra("end date", termEnd);
+        startActivity(changeActivity);
+    }
+
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        String statusSelected = adapterView.getItemAtPosition(i).toString();
+        status = statusSelected;
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
-    });
+        status = "";
+    };
 }

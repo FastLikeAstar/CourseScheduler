@@ -44,14 +44,6 @@ public class TermList extends AppCompatActivity {
         return true;
     }
 
-    public boolean opOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public void addNewTerm(View view){
         Intent navToNewActivity = new Intent(TermList.this, TermDetails.class );

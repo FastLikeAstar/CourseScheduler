@@ -1,5 +1,7 @@
 package com.example.coursescheduler.ui;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -52,11 +56,6 @@ public class TermDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_details);
-        RecyclerView recyclerView = findViewById(R.id.course_recyclerview);
-
-        final CourseListAdapter adapter = new CourseListAdapter(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         editNamePrompt = findViewById(R.id.TermNamePrompt);
         startDatePrompt = findViewById(R.id.TermStartPrompt);
@@ -68,6 +67,13 @@ public class TermDetails extends AppCompatActivity {
         endDate = getIntent().getStringExtra("end date");
 
         repository = new Repository(getApplication());
+
+        List<Course> allCourse = repository.getAllCourse(this.id);
+        RecyclerView recyclerView = findViewById(R.id.course_recyclerview);
+        final CourseListAdapter listAdapter = new CourseListAdapter(this);
+        recyclerView.setAdapter(listAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        listAdapter.setCourses(allCourse);
 
         ImageButton imageButton = findViewById(R.id.saveTermButton);
         imageButton.setOnClickListener(new View.OnClickListener(){
@@ -123,7 +129,7 @@ public class TermDetails extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker dp, int year, int monthOfYear, int dayOfMonth) {
-                                startDatePrompt.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                                endDatePrompt.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
                             }
                         }, year, month, day);
                 endDatePicker.show();
@@ -146,21 +152,31 @@ public class TermDetails extends AppCompatActivity {
         recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         listAdapter.setCourses(allCourse);
+
+        id = getIntent().getIntExtra("id", -1);
+        name = getIntent().getStringExtra("name");
+        startDate = getIntent().getStringExtra("start date");
+        endDate = getIntent().getStringExtra("end date");
+
+        editNamePrompt.setText(name);
+        startDatePrompt.setText(startDate);
+        endDatePrompt.setText(endDate);
     }
 
     public void addNewCourse(View view){
         Intent navToNewActivity = new Intent(TermDetails.this, CourseDetails.class );
+        navToNewActivity.putExtra("term id",id);
         startActivity(navToNewActivity);
     }
 
-    public void createAlarm(View view){
+    public void createTermAlarm(View view){
         try {
             Date dateAsDate = MainActivity.stringToDate(startDate);
             Long trigger = dateAsDate.getTime();
 
             Intent notification = new Intent(TermDetails.this, MyReceiver.class);
             notification.putExtra("key", "Your term, "+ name + ", starts today!");
-            PendingIntent sender = PendingIntent.getBroadcast(TermDetails.this, MainActivity.alertNumber++,notification, 0);
+            PendingIntent sender = PendingIntent.getBroadcast(TermDetails.this, MainActivity.alertNumber++,notification, FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
 
@@ -169,15 +185,30 @@ public class TermDetails extends AppCompatActivity {
 
             Intent notification2 = new Intent(TermDetails.this, MyReceiver.class);
             notification2.putExtra("key", "Your term, "+ name + ", ends today!");
-            sender = PendingIntent.getBroadcast(TermDetails.this, MainActivity.alertNumber++,notification2, 0);
+            sender = PendingIntent.getBroadcast(TermDetails.this, MainActivity.alertNumber++,notification2, FLAG_IMMUTABLE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
 
-            Snackbar.make(view, "Reminder set for " + term.getTermName() +".", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(view, "Reminder set for " + name +".", Snackbar.LENGTH_LONG).show();
 
         } catch (ParseException e) {
             Snackbar.make(view, "Reminder failed to create", Snackbar.LENGTH_LONG).show();
             e.printStackTrace();
         }
+    }
+
+    public boolean opOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_course_list, menu);
+        return true;
     }
 
     public void deleteTerm(View view){
@@ -188,11 +219,10 @@ public class TermDetails extends AppCompatActivity {
         }
 
         if (numberOfCourses == 0){
-            Snackbar.make(view, term.getTermName()+ " was deleted.", Snackbar.LENGTH_LONG).show();
             repository.delete(term);
         } else{
             Snackbar.make(view, "Unable to delete this term. Delete the courses first.", Snackbar.LENGTH_LONG).show();
-
         }
     }
+
 }

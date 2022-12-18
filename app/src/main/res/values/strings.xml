@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CourseScheduler</string>
+    <string name="app_name">Course Scheduler</string>
     <string name="button_begin">Begin</string>
     <string name="saveButtonText">Save</string>
     <string name="newCourseButton">Add New Course</string>

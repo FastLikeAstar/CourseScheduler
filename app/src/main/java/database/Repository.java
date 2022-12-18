@@ -68,7 +68,7 @@ public class Repository {
     }
     public void delete(Term term){
         databaseExecutor.execute(()->{
-            mTermDao.delete(term);
+            mTermDao.deleteTerm(term.getTermId());
         });
         try{
             Thread.sleep(800);
@@ -112,7 +112,7 @@ public class Repository {
     }
     public void delete(Course course){
         databaseExecutor.execute(()->{
-            mCourseDao.delete(course);
+            mCourseDao.deleteCourse(course.getCourseId());
         });
         try{
             Thread.sleep(800);
@@ -156,7 +156,7 @@ public class Repository {
     }
     public void delete(Assignment assignment){
         databaseExecutor.execute(()->{
-            mAssignmentDao.delete(assignment);
+            mAssignmentDao.deleteAssignment(assignment.getAssignmentId());
         });
         try{
             Thread.sleep(800);

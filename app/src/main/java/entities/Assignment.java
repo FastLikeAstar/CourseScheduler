@@ -10,14 +10,18 @@ public class Assignment {
     @PrimaryKey(autoGenerate = true)
     private int assignmentId;
     private int courseId;
+    private String type;
     private String assignmentName;
-    private String dueDate;
+    private String startDate;
+    private String endDate;
 
-    public Assignment(int assignmentId, int courseId, String assignmentName, String dueDate) {
+    public Assignment(int assignmentId, int courseId, String type, String assignmentName, String startDate, String endDate) {
         this.assignmentId = assignmentId;
         this.courseId = courseId;
+        this.type = type;
         this.assignmentName = assignmentName;
-        this.dueDate = dueDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Assignment(){
@@ -40,6 +44,14 @@ public class Assignment {
         this.courseId = courseId;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getAssignmentName() {
         return assignmentName;
     }
@@ -48,11 +60,21 @@ public class Assignment {
         this.assignmentName = assignmentName;
     }
 
-    public String getDueDate() {
-        return dueDate;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+
 }

@@ -18,8 +18,12 @@ public interface CourseDao {
     void insert(Course course);
     @Update
     void update(Course course);
-    @Delete
-    void delete(Course course);
+
+    // Standard delete was causing a crash. ROOM's DAO_impl would try to call
+    // information from the object is just deleted... (causing null reference).
+    @Query("DELETE FROM courses WHERE courseId = :courseId")
+    void deleteCourse(int courseId);
+
     @Query("SELECT * FROM courses WHERE termId= :termId ORDER BY courseId ASC")
     List<Course> getAllAssociatedCourses(int termId);
 }

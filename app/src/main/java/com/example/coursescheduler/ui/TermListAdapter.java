@@ -82,8 +82,6 @@ public class TermListAdapter extends RecyclerView.Adapter<TermListAdapter.TermVi
                     changeActivity.putExtra("start date", current.getStartDate());
                     changeActivity.putExtra("end date", current.getEndDate());
                     context.startActivity(changeActivity);
-
-
                 }
             });
         }

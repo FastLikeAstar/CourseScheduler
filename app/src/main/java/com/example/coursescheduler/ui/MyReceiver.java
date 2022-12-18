@@ -19,12 +19,15 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         createNotificationChannel(context);
-        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_baseline_add_task_24)
                 .setContentText(intent.getStringExtra("key"))
-                .setContentTitle("CourseScheduler Update:").build();
+                .setContentTitle("CourseScheduler Update:")
+//                .setContentTitle("CourseScheduler Update:").build()
+                .setAutoCancel(true);
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify();
+        //manager.notify();
+        manager.notify(MainActivity.alertNumber++, notification.build());
     }
 
     private void createNotificationChannel(Context context) {
