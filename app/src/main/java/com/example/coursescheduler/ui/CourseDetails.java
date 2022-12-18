@@ -1,10 +1,15 @@
 package com.example.coursescheduler.ui;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -21,8 +26,10 @@ import android.widget.Spinner;
 import com.example.coursescheduler.R;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import database.Repository;
@@ -274,7 +281,32 @@ public class CourseDetails extends AppCompatActivity implements AdapterView.OnIt
 //        startActivity(changeActivity);
 //    }
 
+    public void createCourseAlarm(View view){
+        try {
+            Date dateAsDate = MainActivity.stringToDate(startDate);
+            Long trigger = dateAsDate.getTime();
 
+            Intent notification = new Intent(CourseDetails.this, MyReceiver.class);
+            notification.putExtra("key", "Your course, "+ name + ", starts today!");
+            PendingIntent sender = PendingIntent.getBroadcast(CourseDetails.this, MainActivity.alertNumber++,notification, FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+            dateAsDate = MainActivity.stringToDate(endDate);
+            trigger = dateAsDate.getTime();
+
+            Intent notification2 = new Intent(CourseDetails.this, MyReceiver.class);
+            notification2.putExtra("key", "Your course, "+ name + ", ends today!");
+            sender = PendingIntent.getBroadcast(CourseDetails.this, MainActivity.alertNumber++,notification2, FLAG_IMMUTABLE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+            Snackbar.make(view, "Reminder set for " + name +".", Snackbar.LENGTH_LONG).show();
+
+        } catch (ParseException e) {
+            Snackbar.make(view, "Reminder failed to create", Snackbar.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
